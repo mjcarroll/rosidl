@@ -120,6 +120,14 @@ add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${rosidl_types
   ${_generated_header_files} ${_generated_source_files})
 add_library(${PROJECT_NAME}::${rosidl_generate_interfaces_TARGET}${_target_suffix} ALIAS
   ${rosidl_generate_interfaces_TARGET}${_target_suffix})
+# Each generated source explicitly specialises
+# get_message_type_support_handle<T>, and also uses the specialisations
+# belonging to the types it references.  Concatenating them puts a use ahead of
+# a declaration, which is C2908 on MSVC and an error everywhere else, so this
+# target opts out of unity builds until the generator emits the specialisations
+# up front.
+set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  PROPERTIES UNITY_BUILD OFF)
 if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
