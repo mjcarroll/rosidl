@@ -131,6 +131,12 @@ add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${rosidl_types
   ${_generated_header_files} ${_generated_source_files})
 add_library(${PROJECT_NAME}::${rosidl_generate_interfaces_TARGET}${_target_suffix} ALIAS
   ${rosidl_generate_interfaces_TARGET}${_target_suffix})
+# See rosidl_generator_c for why the generated targets are unity targets.
+if(NOT DEFINED ROSIDL_GENERATED_UNITY_BUILD)
+  set(ROSIDL_GENERATED_UNITY_BUILD ON)
+endif()
+set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  PROPERTIES UNITY_BUILD ${ROSIDL_GENERATED_UNITY_BUILD})
 if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
